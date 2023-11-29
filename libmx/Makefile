@@ -14,7 +14,7 @@ RM = rm -rf
 AR = ar rcs
 MKDIR = mkdir -p
 
-all: $(NAME) clean
+all: $(NAME) 
 
 $(NAME): $(OBJ_FILES)
 	@$(AR) $@ $^
