@@ -1,37 +1,33 @@
-CC = clang
-CFLAGS = -std=c11 -Wall -Wextra -Werror -Wpedantic
+CFLG = -std=c11 $(addprefix -W, all extra error pedantic) -g
 
-OBJDIR = obj
-SRCDIR = src
-LIB_DIR = libmx
-LIB_NAME = $(LIB_DIR)/libmx.a
-LIB = $(LIB_NAME)
-ULS = uls
+SRC_FILES = $(wildcard src/*.c)
+OBJ_FILES = $(addprefix obj/, $(notdir $(SRC_FILES:%.c=%.o)))
 
-SRC = $(SRCDIR)/*.c
-OBJS = $(OBJDIR)/*.o
+all: install
 
-all: $(LIB) $(ULS)
+install: libmx/libmx.a uls
 
-$(ULS):
-	mkdir $(OBJDIR)
-	$(CC) $(CFLAGS) -c $(SRC)
-	mv *.o $(OBJDIR)
-	$(CC) -o $(ULS) $(OBJS) -L$(LIB_DIR) $(LIB_NAME)
+uls: $(OBJ_FILES)
+	@clang $(CFLG) $(OBJ_FILES) -Llibmx -lmx -o $@
 
-$(LIB):
-	make -sC $(LIB_DIR)
+obj/%.o: src/%.c inc/*.h
+	@clang $(CFLG) -c $< -o $@ -Iinc -Ilibmx/inc
 
+$(OBJ_FILES): | obj
+
+obj:
+	@mkdir -p $@
+
+libmx/libmx.a:
+	@make -sC libmx
+	
 clean:
-	rm -f $(OBJS)
-	rm -df $(OBJDIR)
+	@rm -rf obj
 
 uninstall:
-	make -sC $(LIB_DIR) $@
-	make clean
-	rm -f $(ULS)
+	@make -sC libmx $@
+	@rm -rf obj
+	@rm -rf uls
 
-reinstall:
-	make uninstall
-	make all
-	
+reinstall: uninstall all
+

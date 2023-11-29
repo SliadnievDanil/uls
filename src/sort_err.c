@@ -1,3 +1,5 @@
+#include "../inc/uls.h"
+
 void sort_err(char **list, int n) {
     int i, j;
     char *temp;
