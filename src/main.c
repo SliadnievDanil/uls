@@ -8,9 +8,9 @@ int main(int argc, char **argv) {
     } else if(flags->R == 1) {
         output_R_dir(argc, argv, flags);
     } else if(c == 0) {
-        uls_without_flags(flags);
+        uls_flagless(flags);
     } else if(c == 1) {
-         uls_directory_search(argc, argv, flags);
+         scan_directory(argc, argv, flags);
     }
     return flags->error;
 }
